@@ -1,0 +1,16 @@
+<view class="container">
+  <view wx:if="{{dish}}">
+    <image src="{{dish.image_url}}" mode="aspectFit" style="width: 100%; height: 200px;"></image>
+    <text>菜名：{{dish.name}}</text>
+    <text>餐厅：{{dish.restaurant_name}}</text>
+    
+    <input type="number" placeholder="请输入你猜的价格" bindinput="onPriceInput" value="{{userPrice}}" style="border: 1px solid #ccc; margin: 10px 0; padding: 5px;"></input>
+    <button bindtap="onSubmit">提交</button>
+    <button bindtap="loadNextDish" style="margin-top: 10px;">下一题</button>
+    
+    <text wx:if="{{result}}">{{result}}</text>
+  </view>
+  <view wx:else>
+    <text>正在加载数据...</text>
+  </view>
+</view>
