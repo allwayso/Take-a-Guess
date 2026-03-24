@@ -56,36 +56,24 @@ Page({
     if (this.data.isGameOver) return
 
     const userPrice = parseInt(this.data.userPrice)
-    const realPrice = this.data.dish.price
     if (isNaN(userPrice)) {
       this.setData({ result: '请输入有效的价格' })
       return
     }
 
-    let attempts = this.data.attempts + 1
-    const diff = Math.abs(userPrice - realPrice) / realPrice
-
-    let feedback = ''
-    let isGameOver = false
-
-    if (userPrice === realPrice) {
-      feedback = '神了！完全一致！'
-      isGameOver = true
-    } else if (diff <= 0.05) {
-      feedback = '太厉害了，简直是行家！'
-    } else if (diff <= 0.1) {
-      feedback = '眼光不错，非常接近了！'
-    } else if (diff <= 0.2) {
-      feedback = '有点感觉，再琢磨琢磨？'
-    } else {
-      feedback = userPrice > realPrice ? '稍微有点高估了哦。' : '稍微有点低估了哦。'
-    }
-
-    if (attempts >= 2 && !isGameOver) {
-      feedback += ` 游戏结束，真实价格是 ${realPrice} 元。`
-      isGameOver = true
-    }
-
-    this.setData({ result: feedback, attempts: attempts, isGameOver: isGameOver })
+    wx.cloud.callFunction({
+      name: 'checkGuess',
+      data: {
+        dishId: this.data.dish._id,
+        userPrice: userPrice,
+        attempts: this.data.attempts + 1
+      }
+    }).then(res => {
+      this.setData({
+        result: res.result.feedback,
+        isGameOver: res.result.isGameOver,
+        attempts: this.data.attempts + 1
+      })
+    })
   }
 })
